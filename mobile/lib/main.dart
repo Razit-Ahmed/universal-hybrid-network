@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'core/routes/app_routes.dart';
+import 'core/theme/app_theme.dart';
+import 'core/constants/app_strings.dart';
 
 void main() {
-  runApp(const UHNApp());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    const ProviderScope(
+      child: UHNApp(),
+    ),
+  );
 }
 
 class UHNApp extends StatelessWidget {
@@ -10,82 +21,13 @@ class UHNApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
-      title: 'Universal Hybrid Network',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        useMaterial3: true,
-      ),
-      home: const HomeScreen(),
-    );
-  }
-}
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+      theme: AppTheme.darkTheme,
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D1117),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(
-              Icons.hub,
-              size: 90,
-              color: Colors.cyanAccent,
-            ),
-            SizedBox(height: 25),
-
-            Text(
-              "Universal Hybrid Network",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              "UHN",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.cyanAccent,
-                letterSpacing: 3,
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            Text(
-              "Version 0.1.0",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white70,
-              ),
-            ),
-
-            SizedBox(height: 30),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                "Building the Future of Hybrid Communication",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white54,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      initialRoute: AppRoutes.splash,
+      routes: AppRoutes.routes,
     );
   }
 }
