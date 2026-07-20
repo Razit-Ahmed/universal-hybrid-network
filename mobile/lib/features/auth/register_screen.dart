@@ -6,32 +6,35 @@ import '../../shared/widgets/custom_text_field.dart';
 import '../../shared/widgets/glass_card.dart';
 import '../../shared/widgets/gradient_background.dart';
 import '../../shared/widgets/primary_button.dart';
-import 'register_screen.dart';
-import 'forgot_password_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   bool _obscurePassword = true;
-  bool _rememberMe = false;
+  bool _obscureConfirmPassword = true;
+  bool _acceptTerms = false;
   bool _isLoading = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  void _login() {
+  void _register() {
     setState(() {
       _isLoading = true;
     });
@@ -45,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Login button pressed"),
+          content: Text("Register button pressed"),
         ),
       );
     });
@@ -72,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Center(
                       child: AppLogo(
-                        size: 90,
+                        size: 85,
                         showSubtitle: false,
                       ),
                     ),
@@ -80,28 +83,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
 
                     const Text(
-                      "Welcome Back",
+                      "Create Account",
                       textAlign: TextAlign.center,
                       style: TextStyle(
+                        color: Colors.white,
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
 
                     const SizedBox(height: 8),
 
                     Text(
-                      "Login to continue using\n${AppStrings.appName}",
+                      "Create your ${AppStrings.appName} account",
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                      style: const TextStyle(
+                        color: Colors.white70,
                         fontSize: 15,
-                        height: 1.5,
                       ),
                     ),
 
-                    const SizedBox(height: 35),
+                    const SizedBox(height: 30),
+
+                    CustomTextField(
+                      controller: _nameController,
+                      hintText: "Full Name",
+                      prefixIcon: Icons.person_outline,
+                    ),
+
+                    const SizedBox(height: 18),
 
                     CustomTextField(
                       controller: _emailController,
@@ -118,12 +128,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: Icons.lock_outline,
                       obscureText: _obscurePassword,
                       suffixIcon: IconButton(
-                        color: Colors.white70,
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
                         ),
+                        color: Colors.white70,
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
@@ -132,86 +142,85 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 18),
+
+                    CustomTextField(
+                      controller: _confirmPasswordController,
+                      hintText: "Confirm Password",
+                      prefixIcon: Icons.lock_reset_outlined,
+                      obscureText: _obscureConfirmPassword,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        color: Colors.white70,
+                        onPressed: () {
+                          setState(() {
+                            _obscureConfirmPassword =
+                                !_obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
 
                     Row(
-  children: [
-    Checkbox(
-      value: _rememberMe,
-      activeColor: Colors.blue,
-      onChanged: (value) {
-        setState(() {
-          _rememberMe = value ?? false;
-        });
-      },
-    ),
+                      children: [
+                        Checkbox(
+                          value: _acceptTerms,
+                          activeColor: Colors.blue,
+                          onChanged: (value) {
+                            setState(() {
+                              _acceptTerms = value ?? false;
+                            });
+                          },
+                        ),
 
-    const Text(
-      "Remember Me",
-      style: TextStyle(
-        color: Colors.white70,
-      ),
-    ),
+                        const Expanded(
+                          child: Text(
+                            "I accept the Terms & Conditions",
+                            style: TextStyle(
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
 
-    const Spacer(),
+                    const SizedBox(height: 24),
+                                        PrimaryButton(
+                      text: "Create Account",
+                      icon: Icons.person_add_alt_1,
+                      isLoading: _isLoading,
+                      onPressed: _acceptTerms ? _register : null,
+                    ),
 
-    TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ForgotPasswordScreen(),
-          ),
-        );
-      },
-      child: const Text(
-        "Forgot Password?",
-        style: TextStyle(
-          color: Colors.blueAccent,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    ),
-  ],
-),
-
-const SizedBox(height: 24),
-
-PrimaryButton(
-  text: AppStrings.login,
-  isLoading: _isLoading,
-  icon: Icons.login_rounded,
-  onPressed: _login,
-),
-
-const SizedBox(height: 30),
+                    const SizedBox(height: 28),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have an account?",
+                          "Already have an account?",
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
                           ),
                         ),
                         TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const RegisterScreen(),
-      ),
-    );
-  },
-  child: const Text(
-    "Register",
-    style: TextStyle(
-      fontWeight: FontWeight.bold,
-      color: Colors.blueAccent,
-    ),
-  ),
-),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],
